@@ -23,7 +23,10 @@
 			<b-button @click="pegaUsuarios" class="ml-4" variant="success" size="lg"> Obter Usuarios</b-button>
 		</b-card>
 		<hr>
-		<b-list-group>
+		<div class="spinner-border" role="status" v-if="carrega">
+  			<span class="sr-only">Loading...</span>
+		</div>
+		<b-list-group v-else>
 				<b-list-group-item v-for="(use, id) in usuarios" :key="id">
 					<strong>Nome:</strong>{{ use.nome }}
 					<br>
@@ -43,6 +46,7 @@
 export default {
 	data() {
 		return {
+			carrega: false,
 			usuarios: [],
 			mensagens: [],
 			id: null,
@@ -87,6 +91,7 @@ export default {
 			})
 		},
 		async pegaUsuarios() {
+			this.carrega = true
 			 await this.$http('usuarios.json').then(response => {
 				this.usuarios= response.data
 			}).catch(error => { 
@@ -94,7 +99,9 @@ export default {
 					texto:'erro ao buscar os usuários',
 					tipo: 'danger'
 				})
+				
 			})
+			this.carrega = false
 		}
 	},
 }
